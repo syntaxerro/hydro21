@@ -101,6 +101,7 @@ socket.onopen = function (event) {
             setValveState('ch3-valve', request.ch3);
             setValveState('ch4-valve', request.ch4);
 
+            // ten if jest ważny ponieważ czasami pompa utknęła w stanie 'w trakcie zmiany'
             if(Number(document.getElementById('main-valve').dataset.state) && !request.main) {
                 stopPumpChanging(false);
             }
