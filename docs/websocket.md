@@ -2,13 +2,14 @@
 
 ### 1. Inicjalizacja połączenia
 
-> Ekran stoi pod adresem http://127.0.0.1:8075
+> Ekran jest dostępny pod adresem *http://127.0.0.1:8075*
 
 Na początku należy zestawić połączenie websocket ze sterownikiem pod adresem
 ```javascript
 location.hostname.replace(':8075', ':3181')
 // 127.0.0.1:3181
 ```
+
 Zaraz po zestawieniu połączenia należy **wysłać** do serwera taką wiadomość:
 ```json
 {
