@@ -1,6 +1,6 @@
 # Opis funkcjonalności ekranu sterownika
 
-#### 1. Ekran sterownika prezentuje:
+### 1. Ekran sterownika prezentuje:
 ##### a) aktualny stan czterech zaworów kanałowych
 
 - Jest to grafika przedstawiająca zawór i animuje ona jego otwiernia/zamykanie.
@@ -33,7 +33,7 @@
 - Podczas kiedy pompa **pracuje** ma kolor czerwony i etykietę `Zakończ nawadnianie`
     
     
-#### 2. Za pomocą ekranu można zmienić:
+### 2. Za pomocą ekranu można zmienić:
 ##### a) stan zaworu kanałowego od 1 do 4 (otwarty/zamknięty)
 - Kliknięcie w element prezentujący zawór i wyświetlający jego aktualny stan powoduje zmianę jego aktualnego stanu na przeciwny
 - Jeśli pompa pracuje (jej aktualna prędkość > 0) to nie można **zamknąć wszystkich czterech zaworów**
