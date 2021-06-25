@@ -1,0 +1,90 @@
+parameters:
+  dev: true
+
+  database:
+    driver: 'pdo_mysql'
+    user: 'hydro21'
+    password: 'Niewiem1'
+    dbname: 'hydro21'
+
+  tcp_bind_address: '0.0.0.0:3181'
+
+  valves:
+    ch1: 26 #6
+    ch2: 19 #13
+    ch3: 13 #19
+    ch4: 6 #26
+    main: 5
+
+  pump_bin: '/usr/bin/python /opt/hydro21/bin/pump.py'
+
+  stats:
+    efficiency: 0.15
+    minimum_liters: 0.75
+
+
+services:
+# Database
+  db.config:
+    factory: ['Doctrine\ORM\Tools\Setup', 'createAnnotationMetadataConfiguration']
+    arguments: [['/opt/hydro21/src'], '%dev%', null, null, false]
+
+  db.em:
+    factory: ['Doctrine\ORM\EntityManager', 'create']
+    arguments: ['%database%', '@db.config']
+
+  db.repository.scheduled_task:
+    factory: ['@db.em', 'getRepository']
+    arguments: ['App\Entity\ScheduledTask']
+
+# Scheduler
+  scheduler.task_invoke_checker:
+    class: 'App\Scheduler\TaskInvokeChecker'
+    arguments: ['@loop', '@db.repository.scheduled_task', '@scheduler.invoker', 60]
+
+  scheduler.invoker:
+    class: 'App\Scheduler\Invoker'
+    arguments: ['@loop', '@current_state.pumping', '@current_state.valves']
+
+# TCP Controller
+  loop:
+    factory: ['React\EventLoop\Factory', 'create']
+
+  ws_server:
+    class: 'Ratchet\WebSocket\WsServer'
+    arguments: ['@server']
+
+  http_server:
+    class: 'Ratchet\Http\HttpServer'
+    arguments: ['@ws_server']
+
+  reactor:
+    class: 'React\Socket\Server'
+    arguments: ['%tcp_bind_address%', '@loop']
+
+  server_wrapper:
+    class: 'Ratchet\Server\IoServer'
+    arguments: ['@http_server', '@reactor', '@loop']
+
+  clients:
+    class: '\SplObjectStorage'
+
+  server:
+    class: 'App\TCPController\Server'
+    arguments: ['@initializer', '@current_state.valves', '@current_state.pumping', '@clients']
+
+  initializer:
+    class: 'App\TCPController\Initializer'
+    arguments: ['@loop', '@current_state.valves', '@scheduler.task_invoke_checker', '@history_creator', '%valves%']
+
+  history_creator:
+    class: 'App\TCPController\HistoryCreator'
+    arguments: ['@db.em']
+
+  current_state.valves:
+    class: 'App\TCPController\Current\ValvesRelaysState'
+    arguments: ['@loop', '@clients', '@history_creator', '%valves%']
+
+  current_state.pumping:
+    class: 'App\TCPController\Current\PumpingState'
+    arguments: ['@loop', '@current_state.valves', '@clients', '@history_creator', '%pump_bin%']

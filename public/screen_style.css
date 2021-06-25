@@ -1,0 +1,96 @@
+@font-face {
+    font-family: Cabin;
+    src: url(fonts/cabin/Cabin-VariableFont_wdth,wght.ttf);
+}
+
+* {
+    font-family: Cabin;
+}
+
+.valve-button {
+    cursor: pointer;
+}
+
+.valve {
+    height: 136px;
+    width: 150px;
+    background-repeat: no-repeat;
+    background-size: 82%;
+    transform: rotate(90deg);
+    background-position: top;
+}
+
+.valve-open {
+    background-image: url(img/valve_open.png);
+}
+
+.valve-closed {
+    background-image: url(img/valve_closed.png);
+}
+
+.pump {
+    height: 169px;
+    width: 150px;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position-y: 57px;
+}
+
+.pump-enabled {
+    background-image: url(img/pump_enabled.png);
+}
+
+.pump-disabled {
+    background-image: url(img/pump_disabled.png);
+}
+
+#pump-power-label {
+    font-size: 1.5em;
+}
+
+
+.pump-power {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 45px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.pump-power:hover {
+    opacity: 1;
+}
+
+.pump-power::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 45px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.pump-power::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#startHydratingButton {
+    margin-top: .5em;
+    border: 0;
+    padding: .5em;
+    color: white;
+    font-size: 1.6em;
+    background: green;
+    cursor: pointer;
+}
+
+#startHydratingButton:disabled {
+    background: grey !important;
+    cursor: default;
+}

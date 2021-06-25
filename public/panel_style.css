@@ -1,0 +1,61 @@
+body::after {
+    content: "";
+    background-image: url("img/led-szklarnia.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    opacity: 0.7;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.nav {
+    background: whitesmoke;
+}
+
+.nav-fill .nav-item .nav-link {
+    border-radius: 0;
+}
+
+.tab-pane {
+    min-height: 475px
+}
+
+#controler-frame {
+    width: 95%;
+    border: 1px solid;
+    padding: 1em;
+    min-height: 500px;
+    margin: auto;
+    background: white;
+}
+
+#home {
+    padding: 5em;
+    text-align: center;
+}
+
+#schedules-grid {
+    margin: 0.8em;
+    background: white;
+    font-size: .8em;
+    width: 97%;
+}
+
+#history-grid {
+    margin: 0.8em;
+    background: white;
+    font-size: .8em;
+    width: 97%;
+}
+
+#stats-grid {
+    margin: 0.8em;
+    background: white;
+    font-size: .8em;
+    width: 97%;
+}

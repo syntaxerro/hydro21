@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nawodnienie szklarni</title>
+
+    <link rel="stylesheet" href="vendor/bootstrap.min.css"/>
+    <script src="vendor/bootstrap.bundle.min.js"></script>
+
+
+    <link rel="stylesheet" href="panel_style.css?cache=3"/>
+</head>
+<body>
+
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Sterownik</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="scheduler-tab" data-bs-toggle="tab" data-bs-target="#scheduler" type="button" role="tab" aria-controls="scheduler" aria-selected="true">Harmonogram</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="true">Historia</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="true">Statystyki</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="tab-content">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <iframe id="controler-frame"></iframe>
+    </div>
+    <div class="tab-pane fade" id="scheduler" role="tabpanel" aria-labelledby="scheduler-tab">
+        <table class="table table-striped" id="schedules-grid">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Dzień tygodnia</th>
+                    <th>Godzina rozpoczęcia</th>
+                    <th>Czas pracy pompy</th>
+                    <th>Nawadniane sekcje</th>
+                    <th>Prędkość pompy</th>
+                    <th>Opcje</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="card" style="width: 60%;margin: 0 auto 0 auto">
+            <div class="card-body">
+                <form method="post" id="new-schedule-form">
+                    <fieldset>
+                        <legend>Tworzenie nowego wpisu w harmonogramie</legend>
+
+                        <div class="mb-3">
+                            <label for="dayOfWeek" class="form-label">Dzień tygodnia</label>
+                            <select id="dayOfWeek" name="dayOfWeek" class="form-select">
+                                <option value="0">Poniedziałek</option>
+                                <option value="1">Wtorek</option>
+                                <option value="2">Środa</option>
+                                <option value="3">Czwartek</option>
+                                <option value="4">Piątek</option>
+                                <option value="5">Sobota</option>
+                                <option value="6">Niedziela</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="col col-5" style="display: inline-flex;">
+                                <label for="startTime" class="form-label" style="width: 62%;display: flex;align-items: center;">Godzina rozpoczęcia</label>
+                                <input name="startTime" type="time" id="startTime" class="form-control" placeholder="Wybierz czas" required>
+                            </div>
+                            <div class="col col-5" style="display: inline-flex;margin-left: 1em;">
+                                <label for="duration" class="form-label" style="width: 50%;display: flex;align-items: center;">Czas pracy pompy</label>
+                                <input name="duration" min="1" type="number" id="duration" class="form-control" placeholder="Wpisz liczbę minut" required>
+                            </div>
+                        </div>
+
+
+                        <div style="display: flex;align-items: center;width: 100%;justify-content: center;">
+                            <div style="width: 30%;margin-top: 1em;display:inline-block">
+                                <span>Wybierz nawadnianie sekcje</span>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input name="ch1" class="form-check-input" type="checkbox" id="ch1">
+                                        <label class="form-check-label" for="ch1">
+                                            Sekcja A
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input name="ch2" class="form-check-input" type="checkbox" id="ch2">
+                                        <label class="form-check-label" for="ch2">
+                                            Sekcja B
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input name="ch3" class="form-check-input" type="checkbox" id="ch3">
+                                        <label class="form-check-label" for="ch3">
+                                            Sekcja C
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input name="ch4" class="form-check-input" type="checkbox" id="ch4">
+                                        <label class="form-check-label" for="ch4">
+                                            Sekcja D
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="width: 60%;margin-top: 1em;display:inline-block">
+                                <div style="display: inline-flex;margin-left: 1em;width: 73%;">
+                                    <label for="pumpSpeed" class="form-label" style="width: 50%;display: flex;align-items: center;">Moc pompy</label>
+                                    <input name="pumpSpeed" min="1" max="10" type="number" id="pumpSpeed" class="form-control" placeholder="Wpisz liczbę litrów na minutę" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button style="width: 100%; text-transform: uppercase" type="submit" class="btn btn-primary">Dodaj wpis harmonogramu</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+        <table class="table table-striped" id="history-grid">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Data i godzina</th>
+                <th>Sekcja A</th>
+                <th>Sekcja B</th>
+                <th>Sekcja C</th>
+                <th>Sekcja D</th>
+                <th>Prędkość pompy</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button class="btn btn-success" style="margin-left: 0.8em" id="history-next-button">Załaduj kolejne</button>
+
+    </div>
+    <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+        <table class="table table-striped" id="stats-grid">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Data i godzina</th>
+                <th>Czas nawadniania</th>
+                <th>Sekcja A</th>
+                <th>Sekcja B</th>
+                <th>Sekcja C</th>
+                <th>Sekcja D</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button class="btn btn-success" style="margin-left: 0.8em" id="stats-next-button">Załaduj kolejne</button>
+    </div>
+</div>
+
+
+</body>
+<script src="panel.js?cache=1"></script>
+</html>
