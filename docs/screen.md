@@ -42,10 +42,10 @@
     
 ##### b) zmienić prędkość wirnika pompy
 - Zmiana odbywa się za pomocą suwaka prezentującego aktualny stan 
-- Podczas kiedy pompa pracuje (jej aktualna prędkość > 0) to zmiana wartości na suwaku **natychmiastowo wysyła** do sterownika komendę [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-stan-zaworu-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87)
-- Podczas kiedy pompa nie pracuje (jej aktualna prędkośc == 0) zmiana wartości na suwaku **nie wysyła** od razu komendy [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-stan-zaworu-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87) do sterownika
+- Podczas kiedy pompa pracuje (jej aktualna prędkość > 0) to zmiana wartości na suwaku **natychmiastowo wysyła** do sterownika komendę [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-pr%C4%99dko%C5%9B%C4%87-wirnika-pompy-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87)
+- Podczas kiedy pompa nie pracuje (jej aktualna prędkośc == 0) zmiana wartości na suwaku **nie wysyła** od razu komendy [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-pr%C4%99dko%C5%9B%C4%87-wirnika-pompy-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87) do sterownika
 
 ##### c) rozpocząć lub zakończyć nawadnianie
 - Kliknięcie w przycisk podczas kiedy pompa **nie pracuje** i wartość na suwaku jest > 0 powoduje wysłanie komendy `set_pump` do sterownika
-- Kliknięcie w przycisk podczas kiedy pompa **pracuje** powoduje wysłanie do sterownika komendy [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-stan-zaworu-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87) z prędkością = 0
+- Kliknięcie w przycisk podczas kiedy pompa **pracuje** powoduje wysłanie do sterownika komendy [set_pump](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md#aby-zmieni%C4%87-pr%C4%99dko%C5%9B%C4%87-wirnika-pompy-nale%C5%BCy-wys%C5%82a%C4%87-tak%C4%85-wiadomo%C5%9B%C4%87) z prędkością = 0
 
