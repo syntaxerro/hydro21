@@ -6,10 +6,10 @@
 
 #### Wskazówki na początek
 1. Pliki prototypu ekranu to:
-    * `public/screen.html`
-    * `public/screen.js`
-    * `public/screen_style.css`
-    * `public/utils.css`
+    * [public/screen.html](https://github.com/syntaxerro/hydro21/blob/main/public/screen.html)
+    * [public/screen.js](https://github.com/syntaxerro/hydro21/blob/main/public/screen.js)
+    * [public/screen_style.css](https://github.com/syntaxerro/hydro21/blob/main/public/screen_style.css)
+    * [public/utils.css](https://github.com/syntaxerro/hydro21/blob/main/public/utils.css)
 2. Cały nowy front ekranu powinien być w folderze `public/screen`
     * Nowy indeks ekranu będzie plikiem `public/screen/index.html`
     * Wszystkie zależności ekranu będą w folderze z ekranem
