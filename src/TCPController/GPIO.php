@@ -66,8 +66,9 @@ class GPIO
         self::$processId++;
 
         Logger::log($pid, 'RUN: '.$cmd);
+        $timeout = strpos($cmd, 'pump') === false ? 1 : 5;
 
-        $loop->addTimer(strpos($cmd, 'pump') === null ? 1 : 5, function () use($cmd, $pid, $onExit) {
+        $loop->addTimer($timeout, function () use($cmd, $pid, $onExit) {
             if(preg_match('/cat\ \/sys\/class\/gpio\/gpio(\d+)/', $cmd, $matches)) {
                 self::$output = ValveRegister::getByGPIONumber($matches[1]);
             }
