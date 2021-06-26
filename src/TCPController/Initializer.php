@@ -7,7 +7,7 @@ use App\Scheduler\TaskInvokeChecker;
 use App\TCPController\Current\ValvesRelaysState;
 use React\EventLoop\LoopInterface;
 
-class Initializer extends AbstractController
+class Initializer
 {
     private $valves = [];
 
@@ -20,6 +20,9 @@ class Initializer extends AbstractController
     /** @var HistoryCreator */
     private $historyCreator;
 
+    /** @var LoopInterface */
+    private $loop;
+
     /**
      * Initializer constructor.
      * @param LoopInterface $loop
@@ -30,11 +33,11 @@ class Initializer extends AbstractController
      */
     public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, TaskInvokeChecker $taskInvokeChecker, HistoryCreator $historyCreator, array $valves)
     {
+        $this->loop = $loop;
         $this->historyCreator = $historyCreator;
         $this->valves = $valves;
         $this->valvesRelaysState = $valvesRelaysState;
         $this->taskInvokeChecker = $taskInvokeChecker;
-        parent::__construct($loop);
     }
 
     /**
@@ -45,11 +48,11 @@ class Initializer extends AbstractController
         $i=0;
         $j=0;
         foreach($this->valves as $valve) {
-            $this->run('echo '.$valve.' > '.GPIO::PATH_EXPORT, function() use(&$i, &$j) {
+            GPIO::run($this->loop, 'echo '.$valve.' > '.GPIO::PATH_EXPORT, function() use(&$i, &$j) {
                 if($i++ >= 4) {
                     $this->loop->addTimer(2, function() use(&$j) {
                         foreach($this->valves as $valve) {
-                            $this->run('echo "out" > '.sprintf(GPIO::PATH_DIRECTION, $valve).' && echo 1 > '.sprintf(GPIO::PATH_VALUE, $valve), function() use(&$j) {
+                            GPIO::run($this->loop, 'echo "out" > '.sprintf(GPIO::PATH_DIRECTION, $valve).' && echo 1 > '.sprintf(GPIO::PATH_VALUE, $valve), function() use(&$j) {
                                 if($j++ >= 4) {
                                     $this->loop->addTimer(1, function() {
                                         $this->valvesRelaysState->readStates();
