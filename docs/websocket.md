@@ -61,7 +61,7 @@ Klient może do serwera wysyłać komendy do kontrolowania sterownika. Ma on wp�
 {
     "controller": "set_valve",
     "valve": "ch3",
-    "state" true
+    "state": true
 }
 ```
 Powyższa przykładowa wiadomość otwiera zawór na kanale trzecim.
