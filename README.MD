@@ -15,7 +15,7 @@
     * Wszystkie zależności ekranu będą w folderze z ekranem
 3. Aby uruchomić testowy serwer websocket 
     * Należy mieć zainstalowanego [PHP w wersji 7.3](https://windows.php.net/downloads/releases/php-7.3.28-Win32-VC15-x64.zip)
-    * W pliku config.yml trzeba **zakomentować** serwisy do łączenia z bazą danych
+    * W pliku [config.yml](https://github.com/syntaxerro/hydro21/blob/main/config.yml) trzeba **zakomentować** serwisy do łączenia z bazą danych
     ```yml
     # Database production
     #  db.config:
@@ -30,7 +30,7 @@
     #    factory: ['@db.em', 'getRepository']
     #    arguments: ['App\Entity\ScheduledTask']
     ```
-    * W pliku config.yml trzeba **odkomentować** mocki bazy
+    * W pliku [config.yml](https://github.com/syntaxerro/hydro21/blob/main/config.yml) trzeba **odkomentować** mocki bazy
     ```yml
     # Database test
       db.em:
