@@ -3,6 +3,7 @@
 namespace App\TCPController;
 
 use App\Logger;
+use App\TCPController\Mock\ValveRegister;
 use React\ChildProcess\Process;
 use React\EventLoop\LoopInterface;
 
@@ -18,7 +19,18 @@ class GPIO
 
     private static $processId = 1;
 
+    public static $isDevModeEnabled = false;
+
     public static function run(LoopInterface $loop, $cmd, callable $onExit = null)
+    {
+        if(self::$isDevModeEnabled) {
+            self::runDev($loop, $cmd, $onExit);
+        } else {
+            self::runProd($loop, $cmd, $onExit);
+        }
+    }
+
+    public static function runProd(LoopInterface $loop, $cmd, callable $onExit = null)
     {
         self::$output = '';
 
@@ -44,5 +56,30 @@ class GPIO
         });
 
         Logger::log($pid, 'RUN: '.$cmd);
+    }
+
+    public static function runDev(LoopInterface $loop, $cmd, callable $onExit = null)
+    {
+        self::$output = '';
+
+        $pid = 'PROC: '.self::$processId;
+        self::$processId++;
+
+        Logger::log($pid, 'RUN: '.$cmd);
+
+        $loop->addTimer(strpos($cmd, 'pump') === null ? 1 : 5, function () use($cmd, $pid, $onExit) {
+            if(preg_match('/cat\ \/sys\/class\/gpio\/gpio(\d+)/', $cmd, $matches)) {
+                self::$output = ValveRegister::getByGPIONumber($matches[1]);
+            }
+
+            if(preg_match('/echo\ (\d)\ \>\ \/sys\/class\/gpio\/gpio(\d+)/', $cmd, $matches)) {
+                ValveRegister::setByGPIONumber($matches[2], (bool)$matches[1]);
+            }
+
+            Logger::log($pid, 'Exit code: 0');
+            if($onExit) {
+                $onExit(0, self::$output);
+            }
+        });
     }
 }

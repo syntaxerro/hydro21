@@ -24,7 +24,7 @@ parameters:
 
 
 services:
-# Database
+# Database production
   db.config:
     factory: ['Doctrine\ORM\Tools\Setup', 'createAnnotationMetadataConfiguration']
     arguments: [['/opt/hydro21/src'], '%dev%', null, null, false]
@@ -36,6 +36,14 @@ services:
   db.repository.scheduled_task:
     factory: ['@db.em', 'getRepository']
     arguments: ['App\Entity\ScheduledTask']
+
+# Database test
+#  db.em:
+#    class: App\TCPController\Mock\EntityManager
+#
+#  db.repository.scheduled_task:
+#    class: App\TCPController\Mock\ScheduledTaskRepository
+#    arguments: ['@db.em']
 
 # Scheduler
   scheduler.task_invoke_checker:

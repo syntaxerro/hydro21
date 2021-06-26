@@ -13,7 +13,33 @@
 2. Cały nowy front ekranu powinien być w folderze `public/screen`
     * Nowy indeks ekranu będzie plikiem `public/screen/index.html`
     * Wszystkie zależności ekranu będą w folderze z ekranem
-3. Pod adresem `ws://lacinaleszek411.netes.pl/fake-hydro21` będzie dostępny testowy serwer websocketów
-    * Pod adresem `http://lacinaleszek411.netes.pl/hydrolog` będą dostępne logi serwera
-        > Strona nie odświeża się sama
+3. Aby uruchomić testowy serwer websocket 
+    * Należy mieć zainstalowanego [PHP w wersji 7.3](https://windows.php.net/downloads/releases/php-7.3.28-Win32-VC15-x64.zip)
+    * W pliku config.yml trzeba **zakomentować** serwisy do łączenia z bazą danych
+    ```yml
+    # Database production
+    #  db.config:
+    #    factory: ['Doctrine\ORM\Tools\Setup', 'createAnnotationMetadataConfiguration']
+    #    arguments: [['/opt/hydro21/src'], '%dev%', null, null, false]
+    #
+    #  db.em:
+    #    factory: ['Doctrine\ORM\EntityManager', 'create']
+    #    arguments: ['%database%', '@db.config']
+    # 
+    #  db.repository.scheduled_task:
+    #    factory: ['@db.em', 'getRepository']
+    #    arguments: ['App\Entity\ScheduledTask']
+    ```
+    * W pliku config.yml trzeba **odkomentować** mocki bazy
+    ```yml
+    # Database test
+      db.em:
+        class: App\TCPController\Mock\EntityManager
+    
+      db.repository.scheduled_task:
+        class: App\TCPController\Mock\ScheduledTaskRepository
+        arguments: ['@db.em']
+    ```
+    * Uruchomić przez `php.exe` plik `bin\hydromock.php`
+        > Pełna komenda to `php.exe bin\hydromock.php`
     
