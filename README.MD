@@ -3,6 +3,7 @@
 #### Spis treści dokumentacji
 1. [Opis funkcjonalności ekranu sterownika](https://github.com/syntaxerro/hydro21/blob/main/docs/screen.md)
 2. [Komunikacja ze sterownikiem poprzez websocket](https://github.com/syntaxerro/hydro21/blob/main/docs/websocket.md)
+3. [Schemat ekranu sterownika](https://github.com/syntaxerro/hydro21/blob/main/docs/screen_schema.md)
 
 #### Wskazówki na początek
 1. Pliki prototypu ekranu to:
