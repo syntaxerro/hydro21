@@ -6,7 +6,7 @@ use Symfony\Component\Console\Application;
 
 $containerBuilder = new \Symfony\Component\DependencyInjection\ContainerBuilder();
 $loader = new \Symfony\Component\DependencyInjection\Loader\YamlFileLoader($containerBuilder, new \Symfony\Component\Config\FileLocator(__DIR__));
-$loader->load(__DIR__.'/../config.yml');
+$loader->load(\App\YamlConfigurationProvider::getFilePath());
 
 $app = new Application();
 $app->setName('Hydroserver console by Marcin Łacina 2k21');
