@@ -7,5 +7,7 @@ $loader = new \Symfony\Component\DependencyInjection\Loader\YamlFileLoader($cont
 $loader->load(\App\YamlConfigurationProvider::getFilePath());
 
 \App\TCPController\GPIO::$isDevModeEnabled = true;
+\App\TCPController\SystemStatus\SSIDProvider::$isDevModeEnabled = true;
+\App\TCPController\SystemStatus\IpProvider::$isDevModeEnabled = true;
 
 $containerBuilder->get('server_wrapper')->run();

@@ -8,6 +8,7 @@ use App\TCPController\Current\PumpingState;
 use App\TCPController\Current\ValvesRelaysState;
 use App\TCPController\PushMessages\CurrentPumpState;
 use App\TCPController\PushMessages\CurrentValvesStates;
+use App\TCPController\SystemStatus\SystemStatusProviders;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
@@ -23,6 +24,9 @@ class Server implements MessageComponentInterface
     /** @var PumpingState */
     private $pumpingState;
 
+    /** @var SystemStatusProviders */
+    private $systemStatus;
+
     /**
      * @var ConnectionInterface[]
      */
@@ -33,15 +37,17 @@ class Server implements MessageComponentInterface
      * @param Initializer $initializer
      * @param ValvesRelaysState $valvesRelaysState
      * @param PumpingState $pumpingState
+     * @param SystemStatusProviders $systemStatusProviders
      * @param \SplObjectStorage $clients
      */
-    public function __construct(Initializer $initializer, ValvesRelaysState $valvesRelaysState, PumpingState $pumpingState, \SplObjectStorage $clients)
+    public function __construct(Initializer $initializer, ValvesRelaysState $valvesRelaysState, PumpingState $pumpingState, SystemStatusProviders $systemStatusProviders, \SplObjectStorage $clients)
     {
         $initializer->init();
 
         $this->clients = $clients;
         $this->currentValvesRelaysState = $valvesRelaysState;
         $this->pumpingState = $pumpingState;
+        $this->systemStatus = $systemStatusProviders;
     }
 
 
@@ -64,6 +70,7 @@ class Server implements MessageComponentInterface
                 Logger::log('Server', 'Client registered from '.$from->remoteAddress.' ('.$from->resourceId.')');
                 $from->send(json_encode(CurrentValvesStates::createStates($this->currentValvesRelaysState)));
                 $from->send(json_encode(CurrentPumpState::createStates($this->pumpingState)));
+                $from->send(json_encode($this->systemStatus->provideAll()));
                 $this->clients->attach($from);
                 break;
 

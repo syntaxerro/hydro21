@@ -4,6 +4,7 @@ namespace App\TCPController;
 
 use App\TCPController\Current\ValvesRelaysState;
 use App\TCPController\Scheduler\TaskInvokeChecker;
+use App\TCPController\SystemStatus\SystemStatusChecker;
 use React\EventLoop\LoopInterface;
 
 class Initializer
@@ -16,6 +17,9 @@ class Initializer
     /** @var TaskInvokeChecker */
     private $taskInvokeChecker;
 
+    /** @var SystemStatusChecker */
+    private $systemStatusChecker;
+
     /** @var HistoryCreator */
     private $historyCreator;
 
@@ -27,16 +31,18 @@ class Initializer
      * @param LoopInterface $loop
      * @param ValvesRelaysState $valvesRelaysState
      * @param TaskInvokeChecker $taskInvokeChecker
+     * @param SystemStatusChecker $statusChecker
      * @param HistoryCreator $historyCreator
      * @param array $valves
      */
-    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, TaskInvokeChecker $taskInvokeChecker, HistoryCreator $historyCreator, array $valves)
+    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, TaskInvokeChecker $taskInvokeChecker, SystemStatusChecker $statusChecker, HistoryCreator $historyCreator, array $valves)
     {
         $this->loop = $loop;
         $this->historyCreator = $historyCreator;
         $this->valves = $valves;
         $this->valvesRelaysState = $valvesRelaysState;
         $this->taskInvokeChecker = $taskInvokeChecker;
+        $this->systemStatusChecker = $statusChecker;
     }
 
     /**
@@ -58,6 +64,7 @@ class Initializer
                                     });
                                     $this->loop->addTimer(5, function() {
                                         $this->taskInvokeChecker->init();
+                                        $this->systemStatusChecker->init();
                                     });
                                     $this->historyCreator->createHistoryItem(0, 0, 0, 0, 0);
                                 }

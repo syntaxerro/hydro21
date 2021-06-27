@@ -8,6 +8,7 @@ parameters:
     dbname: 'hydro21'
 
   tcp_bind_address: '0.0.0.0:3181'
+  tcp_ip_network: '192.168.1.'
 
   valves:
     ch1: 26 #6
@@ -79,15 +80,11 @@ services:
 
   server:
     class: 'App\TCPController\Server'
-    arguments: ['@initializer', '@current_state.valves', '@current_state.pumping', '@clients']
+    arguments: ['@initializer', '@current_state.valves', '@current_state.pumping', '@system_status.all', '@clients']
 
   initializer:
     class: 'App\TCPController\Initializer'
-    arguments: ['@loop', '@current_state.valves', '@scheduler.task_invoke_checker', '@history_creator', '%valves%']
-
-  history_creator:
-    class: 'App\TCPController\HistoryCreator'
-    arguments: ['@db.em']
+    arguments: ['@loop', '@current_state.valves', '@scheduler.task_invoke_checker', '@system_status.checker', '@history_creator', '%valves%']
 
   current_state.valves:
     class: 'App\TCPController\Current\ValvesRelaysState'
@@ -96,3 +93,27 @@ services:
   current_state.pumping:
     class: 'App\TCPController\Current\PumpingState'
     arguments: ['@loop', '@current_state.valves', '@clients', '@history_creator', '%pump_bin%']
+
+# System status
+  system_status.ip:
+    class: 'App\TCPController\SystemStatus\IpProvider'
+    arguments: ['%tcp_ip_network%']
+
+  system_status.ssid:
+    class: 'App\TCPController\SystemStatus\SSIDProvider'
+
+  system_status.datetime:
+    class: 'App\TCPController\SystemStatus\DatetimeProvider'
+
+  system_status.all:
+    class: 'App\TCPController\SystemStatus\SystemStatusProviders'
+    arguments: ['@system_status.ip', '@system_status.ssid', '@system_status.datetime']
+
+  system_status.checker:
+    class: 'App\TCPController\SystemStatus\SystemStatusChecker'
+    arguments: ['@loop', '@clients', '@system_status.all']
+
+# History
+  history_creator:
+    class: 'App\TCPController\HistoryCreator'
+    arguments: ['@db.em']
