@@ -47,11 +47,11 @@ services:
 
 # Scheduler
   scheduler.task_invoke_checker:
-    class: 'App\Scheduler\TaskInvokeChecker'
+    class: 'App\TCPController\Scheduler\TaskInvokeChecker'
     arguments: ['@loop', '@db.repository.scheduled_task', '@scheduler.invoker', 60]
 
   scheduler.invoker:
-    class: 'App\Scheduler\Invoker'
+    class: 'App\TCPController\Scheduler\Invoker'
     arguments: ['@loop', '@current_state.pumping', '@current_state.valves']
 
 # TCP Controller

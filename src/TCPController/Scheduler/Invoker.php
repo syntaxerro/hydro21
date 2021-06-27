@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Scheduler;
+namespace App\TCPController\Scheduler;
 
 
 use App\Entity\ScheduledTask;

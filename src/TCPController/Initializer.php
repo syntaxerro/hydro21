@@ -2,9 +2,8 @@
 
 namespace App\TCPController;
 
-
-use App\Scheduler\TaskInvokeChecker;
 use App\TCPController\Current\ValvesRelaysState;
+use App\TCPController\Scheduler\TaskInvokeChecker;
 use React\EventLoop\LoopInterface;
 
 class Initializer
