@@ -1,25 +1,39 @@
-export class Api {
-  constructor(address) {
+export class Api extends EventTarget {
+  connect(address) {
     this.ws = new WebSocket(address);
-    this.ws.onmessage = this.message;
-    this.ws.onerror = this.error;
-    this.ws.onclose = this.close;
-    this.ws.onopen = this.open;
+    this.ws.onmessage = (ev) => this.message(ev);
+    this.ws.onerror = (ev) => this.error(ev);
+    this.ws.onclose = (ev) => this.close(ev);
+    this.ws.onopen = (ev) => this.open(ev);
   }
 
-  open(ev) {
-    console.log(ev);
+  send(controller, data) {
+    this.ws.send(
+      JSON.stringify({
+        controller,
+        ...data,
+      })
+    );
+  }
+
+  open() {
+    this.send('register_client');
   }
 
   message(ev) {
-    console.log(ev);
+    const data = JSON.parse(ev.data);
+    const controller = data.controller;
+    delete data.controller;
+
+    const newEvent = new Event(controller);
+    newEvent.data = data;
+
+    this.dispatchEvent(newEvent);
   }
 
   error(ev) {
     console.log(ev);
   }
 
-  close(ev) {
-    console.log(ev);
-  }
+  close(ev) {}
 }

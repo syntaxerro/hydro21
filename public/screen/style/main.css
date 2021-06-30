@@ -19,14 +19,38 @@ body {
   align-items: center;
 }
 
+input {
+  position: absolute;
+}
+
 .screen {
+  /*
   height: 480px;
   width: 800px;
-  border: 1px solid #444;
+  */
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.pipe {
+  stroke-dasharray: 0;
+  stroke-dashoffset: 0;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: all ease-out 2s;
+}
+
+.pipe-back {
+  stroke-width: 24;
+  z-index: -2;
+  stroke: grey;
+  opacity: 1;
 }
 
 .pipe-flowing {
-  animation: pipe-flow linear .5s infinite;
+  stroke-dasharray: 12;
+  animation: pipe-flow linear 0.3s infinite;
 }
 
 @keyframes pipe-flow {
