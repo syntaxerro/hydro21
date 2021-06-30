@@ -7,7 +7,6 @@ import {
   valvesAfterPipes,
   valvesBeforePipes,
 } from './setup.js';
-// treeshaking
 
 // import '../style/main.css';
 
@@ -15,7 +14,8 @@ const api = new Api();
 
 valves.main.svg.onclick = null;
 
-pump.attach(pipes[0], pipes[1]);
+valves.main.attach(pipes[0]);
+pump.attach(pipes[1]);
 pipes[1].attach(pipes[2], ...valvesBeforePipes);
 
 valves.ch4.attach(valvesAfterPipes[0]);
@@ -45,6 +45,7 @@ api.addEventListener('current_valves_states', (ev) => {
 api.addEventListener('current_pump_state', ({ data: { speed } }) => {
   pump.setValue(speed > 0);
   $slider.disabled = false;
+  $slider.value = speed;
 });
 
 api.connect(env.socketAddress);

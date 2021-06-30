@@ -7,10 +7,6 @@ export class Pipe extends Svg {
     this.enabledClass = 'pipe-flowing';
     this.svg.classList.add('pipe');
 
-    this.attr({
-      stroke: 'var(--water)',
-    });
-
     // this.pipe = this.createElement('line', { x1, y1, x2, y2 });
     // this.pipe.classList.add('pipe-back');
   }

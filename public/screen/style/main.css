@@ -19,18 +19,31 @@ body {
   align-items: center;
 }
 
-input {
-  position: absolute;
+main {
+  position: relative;
+  height: 100%;
 }
 
 .screen {
-  /*
-  height: 480px;
-  width: 800px;
-  */
   height: 100%;
-  overflow: hidden;
   background: #fff;
+}
+
+.range-control {
+  position: absolute;
+  display: grid;
+  align-items: flex-end;
+  justify-items: center;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+input {
+  margin-bottom: 48px;
+  pointer-events: all;
 }
 
 .pipe {
@@ -38,6 +51,7 @@ input {
   stroke-dashoffset: 0;
   stroke-width: 8;
   stroke-linecap: round;
+  stroke: var(--disabled);
   transition: all ease-out 2s;
 }
 
@@ -50,6 +64,7 @@ input {
 
 .pipe-flowing {
   stroke-dasharray: 12;
+  stroke: var(--water);
   animation: pipe-flow linear 0.3s infinite;
 }
 
