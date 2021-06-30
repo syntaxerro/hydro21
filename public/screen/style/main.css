@@ -1,3 +1,40 @@
+body,
+html {
+  margin: 0;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --water: #03a9f4;
+  --disabled: grey;
+}
+
 body {
-    background: #eee;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.screen {
+  height: 480px;
+  width: 800px;
+  border: 1px solid #444;
+}
+
+.pipe-flowing {
+  animation: pipe-flow linear .5s infinite;
+}
+
+@keyframes pipe-flow {
+  from {
+    stroke-dashoffset: 48;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
