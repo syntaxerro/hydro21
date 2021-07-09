@@ -31,8 +31,10 @@ export class Api extends EventTarget {
     this.dispatchEvent(newEvent);
   }
 
-  error(ev) {
-    console.log(ev);
+  error(err) {
+    if (err) {
+      alert('connect to server failed');
+    }
   }
 
   close(ev) {}
