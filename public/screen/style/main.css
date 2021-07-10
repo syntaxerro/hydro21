@@ -52,7 +52,7 @@ input {
   stroke-width: 8;
   stroke-linecap: round;
   stroke: var(--disabled);
-  transition: all ease-out 2s;
+  transition: none ease-out 2s;
 }
 
 .pipe-back {
@@ -62,10 +62,17 @@ input {
   opacity: 1;
 }
 
-.pipe-flowing {
-  stroke-dasharray: 12;
+.enabled {
+  fill: var(--water);
+}
+
+.pipe.enabled {
   stroke: var(--water);
+}
+
+.pipe.enabled.flowing {
   animation: pipe-flow linear 0.3s infinite;
+  stroke-dasharray: 12;
 }
 
 @keyframes pipe-flow {
