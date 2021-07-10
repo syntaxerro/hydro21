@@ -49,15 +49,18 @@ input {
 .pipe {
   stroke-dasharray: 0;
   stroke-dashoffset: 0;
-  stroke-width: 8;
+  stroke-width: 16;
   stroke-linecap: round;
   stroke: var(--disabled);
   transition: none ease-out 2s;
 }
 
+.valve-end {
+  fill: grey;
+}
+
 .pipe-back {
-  stroke-width: 24;
-  z-index: -2;
+  stroke-width: 30;
   stroke: grey;
   opacity: 1;
 }
@@ -71,13 +74,13 @@ input {
 }
 
 .pipe.enabled.flowing {
-  animation: pipe-flow linear 0.3s infinite;
-  stroke-dasharray: 12;
+  animation: pipe-flow linear infinite;
+  stroke-dasharray: 10;
 }
 
 @keyframes pipe-flow {
   from {
-    stroke-dashoffset: 48;
+    stroke-dashoffset: 20;
   }
 
   to {

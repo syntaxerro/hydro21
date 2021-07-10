@@ -6,7 +6,8 @@ export class Pipe extends Part {
     super('line', { x1, y1, x2, y2 });
     this.svg.classList.add('pipe');
 
-    // this.pipe = this.createElement('line', { x1, y1, x2, y2 });
-    // this.pipe.classList.add('pipe-back');
+    this.background = [
+      this.createElement('line', { x1, y1, x2, y2 }, 'pipe-back'),
+    ];
   }
 }
