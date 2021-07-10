@@ -5,10 +5,10 @@ import { Pump } from './svg/pump.js';
 export function setup() {
   const valvesY = 92;
 
-  const pump = new Pump({ x: 700, y: 352 });
+  const pump = new Pump({ x: 725, y: 340 });
 
   const valves = {
-    main: new Valve({ x: 48, y: 327, horizontal: true }),
+    main: new Valve({ x: 48, y: 357, horizontal: true }),
     ch1: new Valve({ x: 48, y: valvesY }),
     ch2: new Valve({ x: 280, y: valvesY }),
     ch3: new Valve({ x: 490, y: valvesY }),
@@ -21,7 +21,7 @@ export function setup() {
   const underValvesEnd = { x: valves.ch1.center.x, y: underValvesY };
 
   const pipes = [
-    new Pipe([valves.main.center, pump.center]),
+    new Pipe([{ x: 0, y: valves.main.center.y }, pump.center]),
     new Pipe([pump.center, underValvesStart]),
     new Pipe([
       { x: valves.ch4.center.x, y: underValvesY },
@@ -48,9 +48,13 @@ export function setup() {
     new Pipe([valves.ch1.center, { x: valves.ch1.center.x, y: overValvesY }]),
   ];
 
-  [...pipes, ...valvesBeforePipes, ...valvesAfterPipes].forEach((element) =>
-    element.append()
-  );
+  [...pipes, ...valvesBeforePipes, ...valvesAfterPipes].forEach((element) => {
+    element.appendBackground();
+  });
+
+  [...pipes, ...valvesBeforePipes, ...valvesAfterPipes].forEach((element) => {
+    element.append();
+  });
 
   pump.append();
 
