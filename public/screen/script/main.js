@@ -46,6 +46,11 @@ function updatePipes() {
 
   const p = pump.pump;
 
+  [...pipes, ...valvesAfterPipes, ...valvesBeforePipes].forEach((pipe) => {
+    pipe.svg.style = `animation-duration: ${550 - p * 4}ms`;
+    console.log(`animation-duration: ${550 - p * 4}ms`);
+  });
+
   valvesAfterPipes[0].updateValue({ enabled: ch4 && p, pump: p });
   valvesAfterPipes[1].updateValue({ enabled: ch3 && p, pump: p });
   valvesAfterPipes[2].updateValue({ enabled: ch2 && p, pump: p });
