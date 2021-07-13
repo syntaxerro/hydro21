@@ -27,6 +27,8 @@ api.addEventListener('current_valves_states', (ev) => {
   updatePipes();
 });
 
+api.addEventListener('pump_state_changing', (res) => console.log(res));
+
 api.addEventListener('current_pump_state', ({ data: { speed } }) => {
   pump.updateValue({ pump: speed });
   $slider.disabled = false;
@@ -47,8 +49,7 @@ function updatePipes() {
   const p = pump.pump;
 
   [...pipes, ...valvesAfterPipes, ...valvesBeforePipes].forEach((pipe) => {
-    pipe.svg.style = `animation-duration: ${550 - p * 4}ms`;
-    console.log(`animation-duration: ${550 - p * 4}ms`);
+    pipe.svg.style = `animation-duration: ${500 - p * 35}ms`;
   });
 
   valvesAfterPipes[0].updateValue({ enabled: ch4 && p, pump: p });

@@ -37,5 +37,7 @@ export class Api extends EventTarget {
     }
   }
 
-  close(ev) {}
+  close(ev) {
+    alert('connection closed');
+  }
 }

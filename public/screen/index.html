@@ -14,10 +14,26 @@
         viewBox="0 0 800 480"
         xmlns="http://www.w3.org/2000/svg"
       ></svg>
-      <div class="range-control">
-        <input type="range" from="0" to="10" />
+      <div class="pump-control">
+        <button>ODŚWIEŻ</button>
+        <input step="0.1" type="range" min="0" max="10" list="pump-speed" />
+        <button>NAWADNIANIE</button>
       </div>
     </main>
+
+    <datalist id="pump-speed">
+      <option value="0" label="0"></option>
+      <option value="1"></option>
+      <option value="2"></option>
+      <option value="3"></option>
+      <option value="4"></option>
+      <option value="5" label="5"></option>
+      <option value="6"></option>
+      <option value="7"></option>
+      <option value="8"></option>
+      <option value="9"></option>
+      <option value="10" label="10"></option>
+    </datalist>
 
     <script type="module" src="script/main.js"></script>
   </body>

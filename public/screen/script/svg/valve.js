@@ -32,13 +32,13 @@ export class Valve extends Part {
     this.foreground = [
       this.createElement(
         'rect',
-        { x: x + valveEnd.width / 2, ...valveEnd },
+        { x, ...valveEnd },
         'valve-end'
       ),
 
       this.createElement(
         'rect',
-        { x: x + width - valveEnd.width - valveEnd.width / 2, ...valveEnd },
+        { x: x + width, ...valveEnd },
         'valve-end'
       ),
     ];
