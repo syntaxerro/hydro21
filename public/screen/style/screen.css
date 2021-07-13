@@ -1,0 +1,47 @@
+.screen {
+  height: 100%;
+  background: #fff;
+}
+
+.pipe {
+  stroke-dasharray: 0;
+  stroke-dashoffset: 0;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke: var(--disabled);
+  transition: none ease-out 2s;
+}
+
+.valve-end {
+  fill: grey;
+}
+
+.pipe-back {
+  stroke-width: 28;
+  stroke: grey;
+  opacity: 1;
+}
+
+.enabled {
+  fill: var(--water);
+}
+
+.pipe.enabled {
+  stroke: var(--water);
+}
+
+.pipe.enabled.flowing {
+  animation: pipe-flow linear infinite;
+  stroke-dasharray: 14;
+  stroke-width: 17;
+}
+
+@keyframes pipe-flow {
+  from {
+    stroke-dashoffset: 28;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}

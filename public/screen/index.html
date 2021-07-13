@@ -5,6 +5,9 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style/main.css" />
+    <link rel="stylesheet" href="style/screen.css" />
+    <link rel="stylesheet" href="style/pump-interface.css" />
+    <link rel="stylesheet" href="style/api-intersection.css" />
     <!--link rel="icon" type="image/x-icon" href="favicon.ico"-->
   </head>
   <body>
@@ -14,10 +17,16 @@
         viewBox="0 0 800 480"
         xmlns="http://www.w3.org/2000/svg"
       ></svg>
+
       <div class="pump-control">
         <button>ODŚWIEŻ</button>
         <input step="0.1" type="range" min="0" max="10" list="pump-speed" />
         <button>NAWADNIANIE</button>
+      </div>
+
+      <div class="api-intersection">
+        <h2 class="message"></h2>
+        <p class="message-caption"></p>
       </div>
     </main>
 

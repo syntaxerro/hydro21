@@ -1,9 +1,8 @@
-import { env } from './env.js';
-import { Api } from './api.js';
+import { Controller } from './controller.js';
 import { setup } from './setup.js';
 
 const { valves, pipes, pump, valvesAfterPipes, valvesBeforePipes } = setup();
-const api = new Api();
+const api = new Controller();
 
 for (let valve in valves) {
   valves[valve].addEventListener('setValue', (res) => {
@@ -70,7 +69,7 @@ function updatePipes() {
   pipes[0].updateValue({ enabled: main, pump: p });
 }
 
-api.connect(env.socketAddress);
+api.connect();
 
 const $slider = document.querySelector('input');
 
