@@ -1,6 +1,9 @@
+import { env } from './env.js';
+
 export class Api extends EventTarget {
-  connect(address) {
-    this.ws = new WebSocket(address);
+  connect() {
+    this.ws = new WebSocket(env.socketAddress);
+
     this.ws.onmessage = (ev) => this.message(ev);
     this.ws.onerror = (ev) => this.error(ev);
     this.ws.onclose = (ev) => this.close(ev);
@@ -31,13 +34,19 @@ export class Api extends EventTarget {
     this.dispatchEvent(newEvent);
   }
 
-  error(err) {
-    if (err) {
-      alert('connect to server failed');
+  reconnect(seconds) {
+    if (seconds) {
+      setTimeout(() => {
+        this.reconnect(seconds - 1);
+      }, 1000);
+    } else {
+      this.connect();
     }
   }
 
+  error(err) {}
+
   close(ev) {
-    alert('connection closed');
+    this.reconnect(10);
   }
 }
