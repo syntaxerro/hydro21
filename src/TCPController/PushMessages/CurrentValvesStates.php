@@ -14,8 +14,6 @@ class CurrentValvesStates
 
     public $ch4;
 
-    public $main;
-
     public $controller = 'current_valves_states';
 
     public static function createStates(ValvesRelaysState $valvesRelaysState)
@@ -25,7 +23,6 @@ class CurrentValvesStates
         $instance->ch2 = $valvesRelaysState->getState('ch2');
         $instance->ch3 = $valvesRelaysState->getState('ch3');
         $instance->ch4 = $valvesRelaysState->getState('ch4');
-        $instance->main = $valvesRelaysState->getState('main');
 
         return $instance;
     }

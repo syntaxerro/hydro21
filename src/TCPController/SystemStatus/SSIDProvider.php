@@ -16,6 +16,9 @@ class SSIDProvider
         }
 
         exec(self::COMMAND, $output);
+        if(!$output) {
+            return '#NC#';
+        }
         preg_match('/SSID\:\"(.*)\"/', $output[0], $matches);
         return empty($matches[1]) ? '#NC#' : $matches[1];
     }

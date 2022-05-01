@@ -10,6 +10,7 @@ use React\EventLoop\LoopInterface;
 class Initializer
 {
     private $valves = [];
+    private $pump = [];
 
     /** @var ValvesRelaysState */
     private $valvesRelaysState;
@@ -35,11 +36,12 @@ class Initializer
      * @param HistoryCreator $historyCreator
      * @param array $valves
      */
-    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, TaskInvokeChecker $taskInvokeChecker, SystemStatusChecker $statusChecker, HistoryCreator $historyCreator, array $valves)
+    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, TaskInvokeChecker $taskInvokeChecker, SystemStatusChecker $statusChecker, HistoryCreator $historyCreator, array $valves, array $pump)
     {
         $this->loop = $loop;
         $this->historyCreator = $historyCreator;
         $this->valves = $valves;
+        $this->pump = $pump;
         $this->valvesRelaysState = $valvesRelaysState;
         $this->taskInvokeChecker = $taskInvokeChecker;
         $this->systemStatusChecker = $statusChecker;
@@ -50,30 +52,46 @@ class Initializer
      */
     public function init()
     {
-        $i=0;
-        $j=0;
+        if($this->pump['type'] == 'rel-controlled') {
+            GPIO::run($this->loop, 'echo '.$this->pump['bin'].' > '.GPIO::PATH_EXPORT, function() {
+                GPIO::run($this->loop, 'echo "out" > '.sprintf(GPIO::PATH_DIRECTION, $this->pump['bin']).' && echo 1 > '.sprintf(GPIO::PATH_VALUE, $this->pump['bin']), function() {
+                    $this->initValves();
+                });
+            });
+        } else {
+            $this->initValves();
+        }
+
+    }
+
+    /**
+     * Initialize valves pins
+     */
+    private function initValves()
+    {
         foreach($this->valves as $valve) {
-            GPIO::run($this->loop, 'echo '.$valve.' > '.GPIO::PATH_EXPORT, function() use(&$i, &$j) {
-                if($i++ >= 4) {
-                    $this->loop->addTimer(2, function() use(&$j) {
-                        foreach($this->valves as $valve) {
-                            GPIO::run($this->loop, 'echo "out" > '.sprintf(GPIO::PATH_DIRECTION, $valve).' && echo 1 > '.sprintf(GPIO::PATH_VALUE, $valve), function() use(&$j) {
-                                if($j++ >= 4) {
-                                    $this->loop->addTimer(1, function() {
-                                        $this->valvesRelaysState->readStates();
-                                    });
-                                    $this->loop->addTimer(5, function() {
-                                        $this->taskInvokeChecker->init();
-                                        $this->systemStatusChecker->init();
-                                    });
-                                    $this->historyCreator->createHistoryItem(0, 0, 0, 0, 0);
-                                }
-                            });
-                        }
-                    });
-                }
+            GPIO::run($this->loop, 'echo '.$valve.' > '.GPIO::PATH_EXPORT, function() use($valve) {
+                $this->loop->addTimer(2, function() use($valve) {
+                    GPIO::run($this->loop, 'echo "out" > '.sprintf(GPIO::PATH_DIRECTION, $valve).' && echo 1 > '.sprintf(GPIO::PATH_VALUE, $valve));
+                });
             });
         }
 
+        $this->loop->addTimer(8, function() {
+            $this->initSystem();
+        });
+    }
+
+    /**
+     * Initialize system tasks
+     */
+    private function initSystem()
+    {
+        $this->valvesRelaysState->readStates();
+
+        $this->taskInvokeChecker->init();
+        $this->systemStatusChecker->init();
+
+        $this->historyCreator->createHistoryItem(0, 0, 0, 0, 0);
     }
 }

@@ -19,8 +19,6 @@ class ValvesRelaysState
     private $ch3;
     /** @var boolean */
     private $ch4;
-    /** @var boolean */
-    private $main;
 
     /** @var LoopInterface */
     private $loop;
@@ -69,13 +67,9 @@ class ValvesRelaysState
                     GPIO::run($this->loop, 'cat '.sprintf(GPIO::PATH_VALUE, $this->gpioConfig['ch4']), function($exitCode, $output) use($onRead) {
                         $this->ch4 = !(bool)$output;
 
-                        GPIO::run($this->loop, 'cat '.sprintf(GPIO::PATH_VALUE, $this->gpioConfig['main']), function($exitCode, $output) use($onRead) {
-                            $this->main = !(bool)$output;
+                        Logger::log('ValvesStatesManager', sprintf('Read states: %s %s %s %s', (int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4));
 
-                            Logger::log('ValvesStatesManager', sprintf('Read states: %s %s %s %s | %s', (int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4, (int)$this->main));
-
-                            $onRead ? $onRead() : null;
-                        });
+                        $onRead ? $onRead() : null;
                     });
                 });
             });
@@ -100,7 +94,7 @@ class ValvesRelaysState
     {
         GPIO::run($this->loop, 'echo "'.($state ? '0' : '1').'" > '.sprintf(GPIO::PATH_VALUE, $this->gpioConfig[$valve]), $onSuccess);
         $this->{$valve} = $state;
-        Logger::log('ValvesStatesManager', sprintf('Read states: %s %s %s %s | %s', (int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4, (int)$this->main));
+        Logger::log('ValvesStatesManager', sprintf('Read states: %s %s %s %s', (int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4));
         if($valve == 'ch1') {
             $this->historyCreator->createHistoryItem((int)$state, null, null, null, null);
         } elseif($valve == 'ch2') {

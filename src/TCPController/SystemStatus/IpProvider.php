@@ -22,7 +22,7 @@ class IpProvider
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function get()
     {
@@ -31,7 +31,7 @@ class IpProvider
         }
 
         exec(self::COMMAND, $output);
-        $ip = null;
+        $ip = '#NC#';
         foreach($output as $line) {
             if(preg_match('/inet\ '.str_replace('.', '\\.', $this->network).'(\d+)/', $line, $matches)) {
                 $ip = $this->network.$matches[1];
