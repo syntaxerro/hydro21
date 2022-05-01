@@ -13,8 +13,6 @@ class ValveRegister
 
     public static $ch4 = false;
 
-    public static $main = false;
-
     public static function setByGPIONumber($gpioNumber, bool $state)
     {
         switch($gpioNumber) {
@@ -33,10 +31,6 @@ class ValveRegister
             case 6:
                 self::$ch4 = $state;
                 break;
-
-            case 5:
-                self::$main = $state;
-                break;
         }
     }
 
@@ -47,16 +41,13 @@ class ValveRegister
                 return (int)self::$ch1;
 
             case 19:
-                return (int)self::$ch1;
+                return (int)self::$ch2;
 
             case 13:
-                return (int)self::$ch1;
+                return (int)self::$ch3;
 
             case 6:
-                return (int)self::$ch1;
-
-            case 5:
-                return (int)self::$ch1;
+                return (int)self::$ch4;
         }
 
         return null;

@@ -1,3 +1,3 @@
 export const env = {
-    socketAddress: 'ws://127.0.0.1:3181',
+    socketAddress: 'ws://192.168.1.43:3181',
 };

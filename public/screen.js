@@ -1,3 +1,42 @@
+// rel-controlled or dcm-controlled
+const PUMP_TYPE = 'rel-controlled';
+
+let startHydratingButton = document.querySelector('#startHydratingButton');
+let pumpPowerInput = document.querySelector('#pump-power');
+let pumpPowerLabel = document.getElementById('pump-power-label');
+let pump = document.querySelector('#pump');
+
+if(PUMP_TYPE === 'rel-controlled') {
+    startHydratingButton.removeAttribute('disabled');
+    pumpPowerInput.style.display = 'none';
+    pumpPowerLabel.style.display = 'none';
+}
+
+
+pumpPowerInput.oninput = changePumpPowerLables;
+pumpPowerInput.onchange = function() {
+    if(startHydratingButton.dataset.state == 1) {
+        socket.send(JSON.stringify({
+            "controller": "set_pump",
+            "speed": this.value
+        }));
+    }
+
+};
+
+startHydratingButton.onclick = function() {
+    if(this.disabled) {
+        return;
+    }
+
+    let pumpSpeedValue = PUMP_TYPE === 'dcm-controlled' ? pumpPowerInput.value : 10;
+
+    socket.send(JSON.stringify({
+        "controller": "set_pump",
+        "speed": startHydratingButton.dataset.state == 1 ? 0 : pumpSpeedValue
+    }));
+};
+
 function setValveState(valveId, state)
 {
     let valve = document.getElementById(valveId);
@@ -18,39 +57,14 @@ function setValveState(valveId, state)
     }
 }
 
-let startHydratingButton = document.querySelector('#startHydratingButton');
-let pumpPowerInput = document.querySelector('#pump-power');
-let pumpPowerLabel = document.getElementById('pump-power-label');
-let pump = document.querySelector('#pump');
-
-pumpPowerInput.oninput = changePumpPowerLables;
-pumpPowerInput.onchange = function() {
-    if(startHydratingButton.dataset.state == 1) {
-        socket.send(JSON.stringify({
-            "controller": "set_pump",
-            "speed": this.value
-        }));
-    }
-
-};
-
-startHydratingButton.onclick = function() {
-    if(this.disabled) {
-        return;
-    }
-
-    socket.send(JSON.stringify({
-        "controller": "set_pump",
-        "speed": startHydratingButton.dataset.state == 1 ? 0 : pumpPowerInput.value
-    }));
-};
-
 function changePumpPowerLables()
 {
     console.log('Ustawiono wydajność pompy: '+pumpPowerInput.value);
     pumpPowerLabel.innerText = (pumpPowerInput.value ? pumpPowerInput.value : '0')+' litrów / minute';
 
-    pumpPowerInput.value == 0 ? startHydratingButton.setAttribute('disabled', 'disabled') : startHydratingButton.removeAttribute('disabled');
+    if(PUMP_TYPE === 'dcm-controlled') {
+        pumpPowerInput.value == 0 ? startHydratingButton.setAttribute('disabled', 'disabled') : startHydratingButton.removeAttribute('disabled');
+    }
 }
 
 let pumpChangingInterval = null;
@@ -100,12 +114,6 @@ socket.onopen = function (event) {
             setValveState('ch2-valve', request.ch2);
             setValveState('ch3-valve', request.ch3);
             setValveState('ch4-valve', request.ch4);
-
-            // ten if jest ważny ponieważ czasami pompa utknęła w stanie 'w trakcie zmiany'
-            if(Number(document.getElementById('main-valve').dataset.state) && !request.main) {
-                stopPumpChanging(false);
-            }
-            setValveState('main-valve', request.main);
         }
 
         if(request.controller === 'current_pump_state') {
@@ -116,6 +124,10 @@ socket.onopen = function (event) {
                 startHydratingButton.innerText = 'ROZPOCZNIJ NAWADNIANIE';
                 startHydratingButton.style.background = 'green';
                 startHydratingButton.dataset.state = 0;
+                if(PUMP_TYPE === 'rel-controlled') {
+                    startHydratingButton.removeAttribute('disabled');
+                }
+                stopPumpChanging(false);
             } else {
                 pump.classList.remove('pump-disabled');
                 pump.classList.add('pump-enabled');
@@ -135,6 +147,12 @@ socket.onopen = function (event) {
         if(request.controller === 'pump_state_changing') {
             startPumpChanging();
         }
+
+        if(request.controller === 'system_status') {
+            document.querySelector('#datetime').innerText = request.datetime;
+            document.querySelector('#ipAddress').innerText = request.ip;
+            document.querySelector('#ssid').innerText = request.wifiSSID;
+        }
     };
 
     let valves = document.querySelectorAll('.valve-button');
@@ -142,10 +160,6 @@ socket.onopen = function (event) {
         let valve = valves[i];
 
         valve.onclick = function() {
-            if(this.id == 'main-valve') {
-                return;
-            }
-
             let allOthersIsDisabled = true;
             for(let valve in {'ch1-valve': null, 'ch2-valve': null, 'ch3-valve': null, 'ch4-valve': null}) {
                 if(valve !== this.id) {

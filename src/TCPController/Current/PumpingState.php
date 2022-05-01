@@ -24,6 +24,9 @@ class PumpingState
     /** @var string */
     private $pumpBinary;
 
+    /** @var string */
+    private $pumpType;
+
     /** @var int */
     private $currentSpeed = 0;
 
@@ -39,14 +42,15 @@ class PumpingState
      * @param ValvesRelaysState $valvesRelaysState
      * @param \SplObjectStorage $clients
      * @param HistoryCreator $historyCreator
-     * @param string $pumpBinary
+     * @param array $pumpCfg
      */
-    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, \SplObjectStorage $clients, HistoryCreator $historyCreator, string $pumpBinary)
+    public function __construct(LoopInterface $loop, ValvesRelaysState $valvesRelaysState, \SplObjectStorage $clients, HistoryCreator $historyCreator, array $pumpCfg)
     {
         $this->loop = $loop;
         $this->valvesRelaysState = $valvesRelaysState;
         $this->clients = $clients;
-        $this->pumpBinary = $pumpBinary;
+        $this->pumpBinary = $pumpCfg['bin'];
+        $this->pumpType = $pumpCfg['type'];
         $this->historyCreator = $historyCreator;
     }
 
@@ -59,53 +63,29 @@ class PumpingState
 
         $speedPWM = $this->map($speed, 0, 10, 0, 100);
 
-        if(!$this->valvesRelaysState->getState('main') && $speed > 0) {
-          $this->valvesRelaysState->setState('main', true, function() use($speedPWM, $speed) {
-              $this->setPumpSpeed($this->currentSpeed, $speedPWM, function($output) use($speed) {
-                  Logger::log('PumpingStateService', $output);
-                  $this->currentSpeedLiters = $speed;
-              });
-          });
+        if($speed > 0) {
+            $this->setPumpSpeed($this->currentSpeed, $speedPWM, function($output) use($speed) {
+                Logger::log('PumpingStateService', $output);
+                $this->currentSpeedLiters = $speed;
+            });
           return;
         }
 
-        if($this->valvesRelaysState->getState('main') && $speed == 0) {
+        if($speed == 0) {
             $this->setPumpSpeed($this->currentSpeed, $speedPWM, function($output) use($speed) {
                 Logger::log('PumpingStateService', $output);
                 $this->currentSpeedLiters = $speed;
             });
-
-            $this->loop->addTimer(10, function() {
-                $this->valvesRelaysState->setState('main', false);
-            });
-
-            return;
-        }
-
-        if($this->valvesRelaysState->getState('main') && $speed > 0) {
-            $this->setPumpSpeed($this->currentSpeed, $speedPWM, function($output) use($speed) {
-                Logger::log('PumpingStateService', $output);
-                $this->currentSpeedLiters = $speed;
-            });
-
             return;
         }
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getCurrentSpeedLiters(): float
     {
         return $this->currentSpeedLiters;
-    }
-
-    /**
-     * @param bool $enabled
-     */
-    protected function changeMainValve(bool $enabled)
-    {
-        $this->valvesRelaysState->setState('main', $enabled);
     }
 
     /**
@@ -115,19 +95,30 @@ class PumpingState
      */
     private function _controlPumpSpeed($from, $to, callable  $onSuccess)
     {
-        GPIO::run(
-            $this->loop,
-            $this->pumpBinary.' '.$from.' '.$to,
-            function($exitCode, $output) use($onSuccess, $to) {
-                if($exitCode == 0) {
-                    $this->currentSpeed = $to;
-                    $onSuccess($output);
-                    $this->broadcast(CurrentPumpState::createStates($this));
-                } else {
-                    Logger::log('PumpingStateService', 'Cannot set pump speed! Exit code: '.$exitCode);
+        if($this->pumpType == 'dcm-controlled') {
+            GPIO::run(
+                $this->loop,
+                $this->pumpBinary.' '.$from.' '.$to,
+                function($exitCode, $output) use($onSuccess, $to) {
+                    if($exitCode == 0) {
+                        $this->currentSpeed = $to;
+                        $onSuccess($output);
+                        $this->broadcast(CurrentPumpState::createStates($this));
+                    } else {
+                        Logger::log('PumpingStateService', 'Cannot set pump speed! Exit code: '.$exitCode);
+                    }
                 }
-            }
-        );
+            );
+            return;
+        }
+
+        if($this->pumpType == 'rel-controlled') {
+            $this->currentSpeed = $to;
+            GPIO::run($this->loop, 'echo "'.($to ? '0' : '1').'" > '.sprintf(GPIO::PATH_VALUE, $this->pumpBinary), $onSuccess);
+            $this->loop->addTimer(2.5, function() {
+                $this->broadcast(CurrentPumpState::createStates($this));
+            });
+        }
     }
 
     /**

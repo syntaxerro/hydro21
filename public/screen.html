@@ -4,44 +4,56 @@
         <title>Hydro21 automated controller</title>
         <meta charset="utf-8"/>
 
-        <link rel="stylesheet" href="screen_style.css?cache=2"/>
+        <link rel="stylesheet" href="screen_style.css?cache=3"/>
         <link rel="stylesheet" href="utils.css"/>
     </head>
 
     <body class="flex flex-column align-center">
+        <div class="flex space-between" style="
+        background: rgb(255,255,255);
+        background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(230,230,231,1) 69%, rgba(194,194,194,1) 100%);
+        margin-bottom: 1.15em;
+        width: 99%;
+        padding: 2px;
+        border-radius: 1px;
+">
+            <div id="datetime"></div>
+            <div id="network">
+                IP: <span id="ipAddress"></span> | <span id="ssid"></span>
+            </div>
+        </div>
         <div class="flex space-between" style="width:95%">
             <div id="ch1-valve" class="valve-button" data-state="0">
-                <div class="full-width-center">Sekcja A</div>
-                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Prawa przód</div>
+                <div class="full-width-center">Poziom III</div>
+                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Najwyższy</div>
                 <div class="valve valve-closed"></div>
                 <div class="full-width-center">ZAMKNIĘTY</div>
             </div>
 
             <div id="ch2-valve" class="valve-button" data-state="0">
-                <div class="full-width-center">Sekcja B</div>
-                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Lewa przód</div>
+                <div class="full-width-center">Poziom II</div>
+                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Średni</div>
                 <div class="valve valve-closed"></div>
                 <div class="full-width-center">ZAMKNIĘTY</div>
             </div>
 
             <div id="ch3-valve" class="valve-button" data-state="0">
-                <div class="full-width-center">Sekcja C</div>
-                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Lewa tył</div>
+                <div class="full-width-center">Poziom I</div>
+                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Najniższy</div>
                 <div class="valve valve-closed"></div>
                 <div class="full-width-center">ZAMKNIĘTY</div>
             </div>
 
             <div id="ch4-valve" class="valve-button" data-state="0">
-                <div class="full-width-center">Sekcja D</div>
-                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">Prawa tył</div>
+                <div class="full-width-center">N/N</div>
+                <div class="full-width-center" style="margin-bottom: 1em; font-size: .8em">...</div>
                 <div class="valve valve-closed"></div>
                 <div class="full-width-center">ZAMKNIĘTY</div>
             </div>
         </div>
 
         <div class="flex space-between" style="width: 95%; margin-top: 20px">
-            <div class="flex flex-column" style="margin-left: 3em;">
-                <div style="font-size: 2.2em; text-transform: uppercase">Wydajność pompy</div>
+            <div class="flex flex-column" style="margin-left: 3em;margin-top: 3em;">
                 <div id="pump-power-label">0 litrów/min.</div>
                 <input type="range" min="0" max="10" value="0" class="pump-power" id="pump-power" step="0.1">
 
@@ -49,11 +61,7 @@
             </div>
 
             <div>
-                <div style="text-transform: uppercase;text-align: center;font-weight: bold;font-size: 1.3em;">Układ tłoczący wodę</div>
                 <div class="flex" style="margin-top: -2em;">
-                    <div id="main-valve" class="valve-button" data-state="0">
-                        <div class="valve valve-closed" style="transform: none; margin-top: 43px;"></div>
-                    </div>
                     <div id="pump" class="pump pump-disabled"></div>
                 </div>
 
@@ -61,5 +69,5 @@
         </div>
     </body>
 
-<script src="screen.js?cache=1"></script>
+<script src="screen.js?cache=6"></script>
 </html>

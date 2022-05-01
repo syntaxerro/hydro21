@@ -1,23 +1,46 @@
 parameters:
-  dev: true
+  dev: false
 
   database:
     driver: 'pdo_mysql'
-    user: 'hydro21'
-    password: 'Niewiem1'
-    dbname: 'hydro21'
+
+#    Skałągi
+#    user: 'hydro21'
+#    password: 'Niewiem1'
+#    dbname: 'hydro21'
+
+#   Opole
+    user: 'hydro'
+    password: 'hydro21'
+    dbname: 'hydro'
 
   tcp_bind_address: '0.0.0.0:3181'
   tcp_ip_network: '192.168.1.'
 
   valves:
-    ch1: 26 #6
-    ch2: 19 #13
-    ch3: 13 #19
-    ch4: 6 #26
-    main: 5
+#    Skałągi
+#    ch1: 26
+#    ch2: 19
+#    ch3: 13
+#    ch4: 6
 
-  pump_bin: '/usr/bin/python /opt/hydro21/bin/pump.py'
+#    Opole
+    ch1: 26
+    ch2: 19
+    ch3: 13
+    ch4: 11
+
+
+# 'dcm-controlled' or 'rel-controlled'
+  pump:
+#    Skałągi
+#    type: 'rel-controlled'
+#    bin: 0
+
+#   Opole
+    type: 'rel-controlled'
+    bin: 6
+
 
   stats:
     efficiency: 0.15
@@ -84,7 +107,7 @@ services:
 
   initializer:
     class: 'App\TCPController\Initializer'
-    arguments: ['@loop', '@current_state.valves', '@scheduler.task_invoke_checker', '@system_status.checker', '@history_creator', '%valves%']
+    arguments: ['@loop', '@current_state.valves', '@scheduler.task_invoke_checker', '@system_status.checker', '@history_creator', '%valves%', '%pump%']
 
   current_state.valves:
     class: 'App\TCPController\Current\ValvesRelaysState'
@@ -92,7 +115,7 @@ services:
 
   current_state.pumping:
     class: 'App\TCPController\Current\PumpingState'
-    arguments: ['@loop', '@current_state.valves', '@clients', '@history_creator', '%pump_bin%']
+    arguments: ['@loop', '@current_state.valves', '@clients', '@history_creator', '%pump%']
 
 # System status
   system_status.ip:
