@@ -5,6 +5,7 @@ namespace App\TCPController;
 
 use App\Entity\HistoryItem;
 use App\Logger;
+use App\TCPController\Current\PumpingState;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HistoryCreator
@@ -13,6 +14,10 @@ class HistoryCreator
      * @var EntityManagerInterface
      */
     private $em;
+
+    private $relays = [];
+
+    private $pumpSpeed = 0;
 
     /**
      * HistoryCreator constructor.
@@ -23,33 +28,41 @@ class HistoryCreator
         $this->em = $em;
     }
 
-    /**
-     * @param $ch1
-     * @param $ch2
-     * @param $ch3
-     * @param $ch4
-     * @param $pumpSpeed
-     */
-    public function createHistoryItem(?int $ch1, ?int $ch2, ?int $ch3, ?int $ch4, ?int $pumpSpeed)
+    public function saveRelaysState(int ...$relays)
     {
-        $newHistoryItem = $this->cloneLastItem();
+        $this->relays = $relays;
+        if($this->pumpSpeed == 0) {
+            return;
+        }
+
+        $this->createHistoryItem();
+    }
+
+    public function savePumpSpeed(int $pumpSpeed)
+    {
+        $this->pumpSpeed = $pumpSpeed;
+        $this->createHistoryItem();
+    }
+
+    public function init()
+    {
+        $this->saveRelaysState(0, 0, 0, 0);
+        $this->savePumpSpeed(0);
+    }
+
+
+    public function createHistoryItem()
+    {
+        $newHistoryItem = new HistoryItem();
+
         $newHistoryItem->setDatetime(new \DateTime);
 
-        if($ch1 !== null) {
-            $newHistoryItem->setCh1($ch1);
-        }
-        if($ch2 !== null) {
-            $newHistoryItem->setCh2($ch2);
-        }
-        if($ch3 !== null) {
-            $newHistoryItem->setCh3($ch3);
-        }
-        if($ch4 !== null) {
-            $newHistoryItem->setCh4($ch4);
-        }
-        if($pumpSpeed !== null) {
-            $newHistoryItem->setPumpSpeed($pumpSpeed);
-        }
+        $newHistoryItem->setCh1($this->relays[0]);
+        $newHistoryItem->setCh2($this->relays[1]);
+        $newHistoryItem->setCh3($this->relays[2]);
+        $newHistoryItem->setCh4($this->relays[3]);
+
+        $newHistoryItem->setPumpSpeed($this->pumpSpeed);
 
         try {
             $this->em->persist($newHistoryItem);
@@ -58,19 +71,4 @@ class HistoryCreator
             Logger::log('HistoryCreator', $e->getMessage().PHP_EOL.$e->getTraceAsString());
         }
     }
-
-    /**
-     * @return HistoryItem|object[]
-     */
-    private function cloneLastItem()
-    {
-        $lastHistoryItem = $this->em->getRepository(HistoryItem::class)->findBy([], ['id' => 'DESC'], 1);
-
-        if(!$lastHistoryItem) {
-            return new HistoryItem();
-        }
-
-        return clone $lastHistoryItem[0];
-    }
-
 }

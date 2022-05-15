@@ -92,6 +92,6 @@ class Initializer
         $this->taskInvokeChecker->init();
         $this->systemStatusChecker->init();
 
-        $this->historyCreator->createHistoryItem(0, 0, 0, 0, 0);
+        $this->historyCreator->init();
     }
 }

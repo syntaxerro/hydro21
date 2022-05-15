@@ -133,7 +133,6 @@ class PumpingState
                $this->valvesRelaysState->setState('ch2', true, function() use($from, $to, $onSuccess) {
                    $this->valvesRelaysState->setState('ch3', true, function() use($from, $to, $onSuccess) {
                        $this->valvesRelaysState->setState('ch4', true, function() use($from, $to, $onSuccess) {
-                           $this->historyCreator->createHistoryItem(1, 1, 1, 1, $to);
                            $this->_controlPumpSpeed($from, $to, $onSuccess);
                        });
                    });
@@ -143,7 +142,7 @@ class PumpingState
             return;
         }
 
-        $this->historyCreator->createHistoryItem(null, null, null, null, $to);
+        $this->historyCreator->savePumpSpeed($to);
         $this->_controlPumpSpeed($from, $to, $onSuccess);
     }
 

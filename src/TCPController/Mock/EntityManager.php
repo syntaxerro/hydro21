@@ -3,6 +3,7 @@
 namespace App\TCPController\Mock;
 
 
+use App\Logger;
 use BadMethodCallException;
 use DateTimeInterface;
 use Doctrine\Common\EventManager;
@@ -28,9 +29,12 @@ use Doctrine\Persistence\ObjectRepository;
 
 class EntityManager implements EntityManagerInterface
 {
-    public function persist($object) {}
+    public function persist($object) {
+        Logger::log('DBMock | PERSIST', var_export($object, true));
+    }
 
-    public function flush() {}
+    public function flush() {
+    }
 
     public function getCache()
     {

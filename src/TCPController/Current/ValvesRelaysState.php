@@ -95,15 +95,9 @@ class ValvesRelaysState
         GPIO::run($this->loop, 'echo "'.($state ? '0' : '1').'" > '.sprintf(GPIO::PATH_VALUE, $this->gpioConfig[$valve]), $onSuccess);
         $this->{$valve} = $state;
         Logger::log('ValvesStatesManager', sprintf('Read states: %s %s %s %s', (int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4));
-        if($valve == 'ch1') {
-            $this->historyCreator->createHistoryItem((int)$state, null, null, null, null);
-        } elseif($valve == 'ch2') {
-            $this->historyCreator->createHistoryItem(null, (int)$state, null, null, null);
-        } elseif($valve == 'ch3') {
-            $this->historyCreator->createHistoryItem(null, null, (int)$state, null, null);
-        } elseif($valve == 'ch4') {
-            $this->historyCreator->createHistoryItem(null, null, null, (int)$state, null);
-        }
+
+        $this->historyCreator->saveRelaysState((int)$this->ch1, (int)$this->ch2, (int)$this->ch3, (int)$this->ch4);
+
 
         foreach($this->clients as $client) {
             $client->send(json_encode(CurrentValvesStates::createStates($this)));
